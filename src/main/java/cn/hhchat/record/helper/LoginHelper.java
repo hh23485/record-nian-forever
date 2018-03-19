@@ -122,6 +122,9 @@ public class LoginHelper {
             if (body != null) {
                 Document document = Jsoup.parse(body);
                 Element headerElement = document.selectFirst("a[id=head]");
+                if (headerElement == null) {
+                    return "failed";
+                }
                 String userUrl = headerElement.attr("href").trim();
                 return userUrl.substring(userUrl.lastIndexOf("/") + 1);
             }
