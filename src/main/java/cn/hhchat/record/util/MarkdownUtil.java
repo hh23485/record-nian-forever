@@ -41,10 +41,16 @@ public class MarkdownUtil {
             name = "";
         }
         if (newLine) {
-            return "<img src=\"" + path + "\" style=\"max-width: "+ 100 +"px\" />\n";
+            //if(path.startsWith("http")){
+                return "<img src=\"" + path + "\" style=\"max-width: "+ 100 +"px\" />\n";
+            //}
             //return "![" + name + "](" + path + ")  \n";
         }
-        return "<img src=\"" + path + "\" style=\"max-width: "+ 100 +"px\" />";
+        //if(path.startsWith("http")){
+            return "<img src=\"" + path + "\" style=\"max-width: "+ 100 +"px\" />";
+        //}else{
+        //    return "![" + name + "](" + path + ") ";
+        //}
     }
 
     public static String image(String name, String path, Boolean newLine) {
@@ -52,10 +58,14 @@ public class MarkdownUtil {
             name = "";
         }
         if (newLine) {
-            return "<img src=\"" + path + "\" style=\"max-width: "+ Config.IMG_MAX_SIZE+"px\" />\n";
+            //if(path.startsWith("http")){
+                return "<img src=\"" + path + "\" style=\"max-width: "+ Config.IMG_MAX_SIZE+"px\" />\n";
+            //}
             //return "![" + name + "](" + path + ")  \n";
         }
-        return "<img src=\"" + path + "\" style=\"max-width: "+ Config.IMG_MAX_SIZE+"px\" />";
+        //if(path.startsWith("http")) {
+            return "<img src=\"" + path + "\" style=\"max-width: " + Config.IMG_MAX_SIZE + "px\" />";
+        //}
         //return "![" + name + "](" + path + ")";
     }
 

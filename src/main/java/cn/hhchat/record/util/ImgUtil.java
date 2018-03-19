@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Base64;
 
 /**
  * Created this one by huminghao on 2018/3/18.
@@ -16,6 +17,14 @@ import java.io.InputStream;
 public class ImgUtil {
 
     private final static String background_prefix = "background-image:url(";
+
+    public static String getImage(String path) {
+        if (path.startsWith("http://")) {
+            return path;
+        }else{
+            return Base64.getEncoder().encodeToString(FileUtil.readFile(path));
+        }
+    }
 
     public static String getBackGroundImage(String style) {
         if (StrUtil.isBlank(style) && !style.contains(background_prefix)) {

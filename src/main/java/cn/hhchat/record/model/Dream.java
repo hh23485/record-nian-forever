@@ -33,7 +33,7 @@ public class Dream {
 
     public Boolean saveCoverToLocal() {
         log.info("尝试下载梦想 {} 的封面", this.title);
-        String localFileName = FileUtil.generateCoverImgPath(this.nianId, this.title, ImgUtil.getImageFileName(this.getImg()));
+        String localFileName = FileUtil.generateCoverImgPath(this.getTitle(), ImgUtil.getImageFileName(this.getImg()));
         int count = 10;
         while (!ImgUtil.FetchImage(this.img + "!dream", localFileName) && count-- > 0) {
             log.warn("下载 {} 的封面图失败，重试中", this.title);
@@ -55,7 +55,7 @@ public class Dream {
         sb.append(MarkdownUtil.header1(this.title)).append(MarkdownUtil.emptyLine());
 
         if (img != null) {
-            sb.append(MarkdownUtil.smallImage("cover", this.img, true))
+            sb.append(MarkdownUtil.smallImage("cover", img, true))
                     .append(MarkdownUtil.emptyLine());
         }
 
@@ -81,7 +81,7 @@ public class Dream {
             }
         } else {
             for (int i = this.processList.size() - 1; i >= 0; i--) {
-                log.info("生成第 {} 个进展的 markdown", i);
+                log.info("生成第 {}/{} 个进展的 markdown", ++count, this.processList.size());
                 sb.append(processList.get(i).toMD())
                         .append(MarkdownUtil.emptyLine())
                         .append(MarkdownUtil.emptyBrLine())

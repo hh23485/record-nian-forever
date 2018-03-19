@@ -25,6 +25,9 @@ public class HttpUtil {
         } catch (IOException e) {
             log.error(" => 获取响应失败 {}", e.getMessage());
             return null;
+        }finally {
+            response.body().close();
+            response.close();
         }
     }
 }

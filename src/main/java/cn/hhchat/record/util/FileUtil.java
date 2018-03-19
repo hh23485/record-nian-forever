@@ -1,6 +1,7 @@
 package cn.hhchat.record.util;
 
 import cn.hhchat.record.Config;
+import com.xiaoleilu.hutool.io.IoUtil;
 import com.xiaoleilu.hutool.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,6 +9,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created this one by huminghao on 2018/3/18.
@@ -23,8 +29,8 @@ public class FileUtil {
         return Config.ROOT + "nian/image/header/" + nickname + "-" + fileName;
     }
 
-    public static String generateCoverImgPath(String id, String title, String fileName) {
-        return Config.ROOT + "nian/image/" + title + "/cover-" + id + "-" + fileName;
+    public static String generateCoverImgPath(String id, String fileName) {
+        return Config.ROOT + "nian/image/" + id + "/cover-" + fileName;
     }
 
     public static String generateMDPath(String title) {
@@ -65,6 +71,17 @@ public class FileUtil {
             }
         }
         return true;
+    }
+
+    public static byte[] readFile(String filePath) {
+        try {
+            byte[] imageContents = null;
+            imageContents = com.xiaoleilu.hutool.io.FileUtil.readBytes(new File(filePath));
+            return imageContents;
+        } catch ( Exception e) {
+            log.error(" => 读取图片失败 {}", e.getMessage());
+        }
+        return null;
     }
 
 }

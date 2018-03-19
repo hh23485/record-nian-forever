@@ -1,15 +1,10 @@
 package cn.hhchat.record;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import com.xiaoleilu.hutool.json.JSON;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.json.JSONUtil;
-import com.xiaoleilu.hutool.util.StrUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -26,6 +21,8 @@ public class Config {
 
     public static final String DOMAIN = "http://nian.so/";
     public static String COOKIE = "";
+    public static String SHELL = "";
+    public static String UID = "";
     public static String ROOT = "./";
     public static String IMG_MAX_SIZE = "500";
     public static String EMAIL;

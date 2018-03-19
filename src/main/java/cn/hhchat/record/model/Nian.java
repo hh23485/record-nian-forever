@@ -17,7 +17,7 @@ public class Nian {
         for (Dream dream : dreamList) {
             dream.saveCoverToLocal();
             for (ProcessItem processItem : dream.getProcessList()) {
-                processItem.saveImagesToLocal(dream.getNianId());
+                processItem.saveImagesToLocal(dream.getTitle());
             }
         }
         user.saveHeaderImageToLocal();

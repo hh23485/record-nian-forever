@@ -76,20 +76,20 @@ public class Main {
             nian = new Nian();
             nian.setUser(user);
             nian.setDreamList(dreamList);
+
+            log.info(" => 尝试写入 json");
+            JsonHelper jsonHelper = new JsonHelper();
+            jsonHelper.exportJsonFile(nian);
         } else {
             nian = JsonHelper.load();
         }
+
         if (nian == null) {
             log.error("获取数据失败");
             return;
         }
 
         try {
-            log.info(" => 尝试写入 json");
-            JsonHelper jsonHelper = new JsonHelper();
-            jsonHelper.exportJsonFile(nian);
-
-
             log.info(" => 尝试生成 markdown");
             MDHelper MDHelper = new MDHelper();
             MDHelper.generateMarkdownFiles(nian);

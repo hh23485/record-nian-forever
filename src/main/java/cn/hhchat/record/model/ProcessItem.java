@@ -27,14 +27,14 @@ public class ProcessItem {
     String coolCnt;
     String createTime;
 
-    public Boolean saveImagesToLocal(String id) {
+    public Boolean saveImagesToLocal(String title) {
         if (imageList.size() == 0) {
             return true;
         }
         for (int i = 0; i < imageList.size(); i++) {
             log.info(" => 尝试下载进展 {} 的图片 {}/{}", this.id, i + 1, imageList.size());
             String pic = imageList.get(i);
-            String localFileName = FileUtil.generateProcessImgPath(id, this.id, ImgUtil.getImageFileName(pic));
+            String localFileName = FileUtil.generateProcessImgPath(title, this.id, ImgUtil.getImageFileName(pic));
             int count = 10;
             while (!ImgUtil.FetchImage(pic + "!large", localFileName) && count-- > 0) {
                 log.warn(" => 下载进展的图片失败，重试中");
