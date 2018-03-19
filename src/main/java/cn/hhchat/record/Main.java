@@ -29,7 +29,7 @@ public class Main {
         Nian nian = null;
 
         File file = new File(".");
-        Config.ROOT = file.getAbsolutePath()+"/";
+        Config.ROOT = file.getAbsolutePath() + "/";
         Config.ROOT = "/Users/huminghao/Desktop/nian.so/";
 
 
@@ -59,6 +59,9 @@ public class Main {
                 userId = loginHelper.login(client, email, password);
                 if (userId != null && userId.equals("error")) {
                     log.error("邮箱或者密码错误，请检查");
+                    return;
+                } else if (userId != null && userId.equals("failed")) {
+                    log.error("账户状态异常，请查看是不是忘更被停用了");
                     return;
                 }
             } while (userId == null);
