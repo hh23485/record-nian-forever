@@ -1,5 +1,6 @@
 package cn.hhchat.record.model;
 
+import cn.hhchat.record.model.item.ProcessItem;
 import lombok.Data;
 
 import java.util.List;
@@ -11,15 +12,14 @@ import java.util.List;
 public class Nian {
 
     User user;
-    List<Dream> dreamList;
+    List<DreamItem> dreamItemList;
 
     public void localingImg() {
-        for (Dream dream : dreamList) {
-            dream.saveCoverToLocal();
-            for (ProcessItem processItem : dream.getProcessList()) {
-                processItem.saveImagesToLocal(dream.getTitle());
+        for (DreamItem dreamItem : dreamItemList) {
+            dreamItem.saveCoverToLocal();
+            for (ProcessItem processItem : dreamItem.getProcessList()) {
+                processItem.saveImagesToLocal(dreamItem.getTitle());
             }
         }
-        user.saveHeaderImageToLocal();
     }
 }

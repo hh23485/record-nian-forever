@@ -14,6 +14,13 @@ public class MarkdownUtil {
         return "# " + item + "  \n";
     }
 
+    public static String code(String item) {
+        if (item == null) {
+            item = "";
+        }
+        return "`" + item + "` ";
+    }
+
 
     public static String header2(String item) {
         if (item == null) {
@@ -41,16 +48,9 @@ public class MarkdownUtil {
             name = "";
         }
         if (newLine) {
-            //if(path.startsWith("http")){
-                return "<img src=\"" + path + "\" style=\"max-width: "+ 100 +"px\" />\n";
-            //}
-            //return "![" + name + "](" + path + ")  \n";
+            return "<img src=\"" + path + "\" style=\"max-width: " + 100 + "px; max-height: 800px; width: auto; height: auto\" />\n";
         }
-        //if(path.startsWith("http")){
-            return "<img src=\"" + path + "\" style=\"max-width: "+ 100 +"px\" />";
-        //}else{
-        //    return "![" + name + "](" + path + ") ";
-        //}
+        return "<img src=\"" + path + "\" style=\"max-width: " + 100 + "px; max-height: 800px; width: auto; height: auto\" />";
     }
 
     public static String image(String name, String path, Boolean newLine) {
@@ -58,15 +58,9 @@ public class MarkdownUtil {
             name = "";
         }
         if (newLine) {
-            //if(path.startsWith("http")){
-                return "<img src=\"" + path + "\" style=\"max-width: "+ Config.IMG_MAX_SIZE+"px\" />\n";
-            //}
-            //return "![" + name + "](" + path + ")  \n";
+            return "<img src=\"" + path + "\" style=\"max-width: " + Config.IMG_MAX_SIZE + "px; max-height: 800px; width: auto; height: auto\" />\n";
         }
-        //if(path.startsWith("http")) {
-            return "<img src=\"" + path + "\" style=\"max-width: " + Config.IMG_MAX_SIZE + "px\" />";
-        //}
-        //return "![" + name + "](" + path + ")";
+        return "<img src=\"" + path + "\" style=\"max-width: " + Config.IMG_MAX_SIZE + "px; max-height: 800px; width: auto; height: auto\" />";
     }
 
     public static String toc() {

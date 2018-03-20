@@ -1,19 +1,25 @@
 package cn.hhchat.record.helper;
 
 import cn.hhchat.record.Config;
-import cn.hhchat.record.model.Dream;
-import cn.hhchat.record.util.ImgUtil;
-import cn.hhchat.record.model.ProcessItem;
+import cn.hhchat.record.model.DreamItem;
+import cn.hhchat.record.model.data.Comment;
+import cn.hhchat.record.model.data.Step;
+import cn.hhchat.record.model.item.CommentItem;
+import cn.hhchat.record.util.HttpUtil;
+import cn.hhchat.record.model.item.ProcessItem;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.xiaoleilu.hutool.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -22,84 +28,93 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProcessHelper {
 
-    public List<Dream> getAllProcess(OkHttpClient client, List<Dream> dreamList) {
-        getAllProcessFromBookList(client, dreamList);
-        return dreamList;
+    private OkHttpClient client;
+
+    public ProcessHelper(OkHttpClient client) {
+        this.client = client;
     }
 
-    public void getAllProcessFromBookList(OkHttpClient client, List<Dream> dreamList) {
+    public List<DreamItem> getAllProcess(List<DreamItem> dreamItemList) {
+        getAllProcessFromBookList(dreamItemList);
+        return dreamItemList;
+    }
 
-        for (Dream dream : dreamList) {
-            getAllProcessFromBook(client, dream);
-            boolean test = false;
-            if (test) {
-                return;
-            }
+    public void getAllProcessFromBookList(List<DreamItem> dreamItemList) {
+
+        for (DreamItem dreamItem : dreamItemList) {
+            getAllProcessFromBook(dreamItem);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 log.info(" => 线程出错");
             }
+            Boolean test = false;
+            if (test) {
+                return;
+            }
         }
-
-        //CountDownLatch countDownLatch = new CountDownLatch(dreamList.size());
-        //for (Dream dream : dreamList) {
-        //    new Thread(() -> {
-        //        try{
-        //            getAllProcessFromBook(client, dream);
-        //        }catch (Exception e){
-        //            log.error("获取Book - {} 进展出错",dream.getTitle());
-        //        }finally {
-        //            countDownLatch.countDown();
-        //        }
-        //    });
-        //}
-        //try {
-        //    countDownLatch.await();
-        //} catch (InterruptedException e) {
-        //    log.error("多线程获取进展出错: {}", e.getMessage());
-        //}
-
     }
 
-    private void getAllProcessFromBook(OkHttpClient client, Dream dream) {
+    private void getAllProcessFromBook(DreamItem dreamItem) {
         List<ProcessItem> processItemList = new ArrayList<>();
-        Integer page = 0;
+        Integer page = 1;
         while (page != null && page != -1) {
             log.info(" => 获取第 {} 页进展", page);
-            page = getPage(client, dream, page, processItemList);
+            page = getPageProcess(dreamItem, page, processItemList);
         }
-        dream.setProcessList(processItemList);
+        // deal comment
+        dreamItem.setProcessList(processItemList);
+        if (Config.WANT_COMMENTS) {
+            dealProcessComments(processItemList);
+        }
     }
 
-    public Integer getPage(OkHttpClient client, Dream dream, Integer page, List<ProcessItem> processItemList) {
+    //多线程 下载
+    public void dealProcessComments(List<ProcessItem> processItems) {
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+        CountDownLatch countDownLatch = new CountDownLatch(processItems.size());
+        for (ProcessItem item : processItems) {
+            pool.submit(() -> {
+                try {
+                    getAllComments(item);
+                } catch (Exception e) {
+                    log.error("线程出错");
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        try {
+            countDownLatch.await();
+            pool.shutdown();
+        } catch (InterruptedException e) {
+            log.error("等待出错");
+        }
+    }
+
+    public Integer getPageProcess(DreamItem dreamItem, Integer page, List<ProcessItem> processItemList) {
         Request request = null;
-        if (page == 0) {
-            request = new Request.Builder().url(dream.getPageUrl()).header("Cookie", Config.COOKIE).build();
-        } else {
-            // add all page info
-            RequestBody body = new FormBody.Builder().add("id", dream.getNianId()).add("page", page.toString()).build();
-            request = new Request.Builder().url(Config.getHtml("more_step.php")).post(body).build();
-        }
-        Integer next = null;
+        request = new Request.Builder().url(ApiHelper.getProcessFromDreamUrl(dreamItem.getId(), page)).header("Cookie", Config.COOKIE).build();
+        Boolean next = null;
         do {
-            next = getPage(client, request, processItemList);
+            next = getPageProcess(request, processItemList);
         } while (next == null);
-        return next;
+        return !next ? -1 : page + 1;
     }
 
 
-    private Integer getPage(OkHttpClient client, Request request, List<ProcessItem> processItemList) {
+    private Boolean getPageProcess(Request request, List<ProcessItem> processItemList) {
         try {
             Response response = client.newCall(request).execute();
-            if (response != null && response.isSuccessful()) {
-                String body = response.body().string();
-                Document processPage = Jsoup.parse(body);
-                processPage.outputSettings().prettyPrint(false);
-                List<ProcessItem> list = analizyerProcessList(processPage.select("div[class=step]"));
+            JSONObject respJson = HttpUtil.isOk(response);
+            if (respJson != null && respJson.getInteger("error") == 0) {
+                JSONObject jsonData = respJson.getJSONObject("data");
+                JSONArray jsonSteps = jsonData.getJSONArray("steps");
+
+                List<ProcessItem> list = analyzeProcessList(jsonSteps);
                 if (list != null) {
                     processItemList.addAll(list);
-                    return hasNext(processPage);
+                    return processHasNext(jsonSteps);
                 } else {
                     return null;
                 }
@@ -111,68 +126,120 @@ public class ProcessHelper {
     }
 
 
-    public Integer hasNext(Document document) {
-        Element readMore = document.selectFirst("div[class=step_more]");
-        if (readMore == null) {
-            return -1;
-        }
-        String readMoreMethod = readMore.attr("onclick");
-        int pageEnd = readMoreMethod.lastIndexOf("'");
-        int pageStart;
-        for (pageStart = pageEnd - 1; pageStart > readMoreMethod.lastIndexOf(","); pageStart--) {
-            if (readMoreMethod.charAt(pageStart) == '\'') {
-                break;
-            }
-        }
-        String pageNumberStr = readMoreMethod.substring(pageStart + 1, pageEnd);
-        return Integer.valueOf(pageNumberStr);
+    private Boolean processHasNext(JSONArray stepArrays) {
+        return stepArrays.size() > 0;
     }
 
-    public List<ProcessItem> analizyerProcessList(List<Element> processElementList) {
-        return processElementList.stream().map(this::analizyer).collect(Collectors.toList());
+    private List<ProcessItem> analyzeProcessList(JSONArray jsonStepArray) {
+        List<ProcessItem> processItemList = new ArrayList<>();
+        for (int i = 0; i < jsonStepArray.size(); i++) {
+            ProcessItem processItem = analyzeProcess(jsonStepArray.getJSONObject(i));
+            processItemList.add(processItem);
+        }
+        return processItemList;
     }
 
-    public ProcessItem analizyer(Element processElement) {
-        String processId = processElement.id();
-        String createTime = processElement.selectFirst("div[class=step_time]").text();
+    private ProcessItem analyzeProcess(JSONObject jsonStep) {
+        Step step = jsonStep.toJavaObject(Step.class);
+        String createTime = DateUtil.date(step.getLastdate() * 1000).toString("yyyy-MM-dd HH:mm");
 
-        Element stepCoolMeElement = processElement.selectFirst("div[step_cool_me]");
-        String coolCnt = stepCoolMeElement == null ? "赞 (0)" : stepCoolMeElement.text();
-        List<String> imageList = processImageList(processElement.select("a[class=img]"));
-        List<String> textContent = processTextContent(processElement);
+        List<String> imageList = processImageList(step);
+        List<String> textContent = processTextContent(step);
         log.info(" => 获取到文字记录: {}", textContent);
         ProcessItem process = new ProcessItem();
-        process.setId(processId.substring(4));
+        process.setId(step.getSid());
         process.setImageList(imageList);
         process.setText(textContent);
         process.setCreateTime(createTime);
-        process.setCoolCnt(coolCnt);
+        process.setCoolCnt(step.getLikes());
+        process.setUsername(step.getUser());
+        process.setUid(step.getUid());
         return process;
     }
 
-    public List<String> processImageList(List<Element> imageElementList) {
-        return imageElementList.stream().map(ImgUtil::getBackGroundImage).collect(Collectors.toList());
+
+    public List<String> processImageList(Step step) {
+        return step.getImages().stream().map(img -> ApiHelper.getProcessImageUrl(img.getPath())).collect(Collectors.toList());
     }
 
-    private List<String> processTextContent(Element element) {
-        if (element.selectFirst("div[class=step_inner]") != null) {
-            element = element.selectFirst("div[class=step_inner]");
-        }
-        List<TextNode> nodes = element.textNodes();
-        String contentStr = "";
-        for (TextNode node : nodes) {
-            String nodeStr = node.getWholeText().trim();
-            if (!nodeStr.startsWith("<") && !nodeStr.isEmpty()) {
-                contentStr = node.toString().trim();
-            }
-        }
-        String[] strLines = contentStr.split("\\n");
+    private List<String> processTextContent(Step step) {
+        String[] strLines = step.getContent().trim().split("\\n");
         List<String> lineList = new ArrayList<>();
         for (String line : strLines) {
             lineList.add(line.trim());
         }
         return lineList;
     }
+
+
+    public List<CommentItem> getAllComments(ProcessItem processItem) {
+        List<CommentItem> commentItemList = new ArrayList<>();
+        Integer page = 1;
+        while (page != null && page != -1) {
+            log.info(" => 获取进展 {} 评论", processItem.getId());
+            page = getPageComment(processItem, page, commentItemList);
+        }
+        processItem.setCommentItemList(commentItemList);
+        return commentItemList;
+    }
+
+    public Integer getPageComment(ProcessItem processItem, Integer page, List<CommentItem> commentItemList) {
+        Request request = null;
+        request = new Request.Builder().url(ApiHelper.getProcessCommentUrl(processItem.getId(), page)).header("Cookie", Config.COOKIE).build();
+        Boolean next = null;
+        do {
+            next = getPageComment(request, commentItemList);
+        } while (next == null);
+        return !next ? -1 : page + 1;
+    }
+
+
+    private Boolean getPageComment(Request request, List<CommentItem> commentItemList) {
+        try {
+            Response response = client.newCall(request).execute();
+            JSONObject respJson = HttpUtil.isOk(response);
+            if (respJson != null && respJson.getInteger("error") == 0) {
+                JSONObject jsonData = respJson.getJSONObject("data");
+                JSONArray jsonComment = jsonData.getJSONArray("comments");
+                List<CommentItem> list = analyzerCommentList(jsonComment);
+                if (list != null) {
+                    commentItemList.addAll(list);
+                    return commentHasNext(jsonComment);
+                } else {
+                    return null;
+                }
+            }
+        } catch (IOException e) {
+            log.error("get page failed: {}", e.getMessage());
+        }
+        return null;
+    }
+
+
+    public List<CommentItem> analyzerCommentList(JSONArray jsonCommentArray) {
+        List<CommentItem> commentItemList = new ArrayList<>();
+        for (int i = 0; i < jsonCommentArray.size(); i++) {
+            CommentItem commentItem = analyzeComment(jsonCommentArray.getJSONObject(i));
+            commentItemList.add(commentItem);
+        }
+        return commentItemList;
+    }
+
+    public Boolean commentHasNext(JSONArray commentArrays) {
+        return commentArrays.size() > 0;
+    }
+
+    public CommentItem analyzeComment(JSONObject jsonComment) {
+        Comment comment = jsonComment.toJavaObject(Comment.class);
+        CommentItem commentItem = new CommentItem();
+        commentItem.setCreateTime(DateUtil.date(comment.getLastdate() * 1000).toString("yyyy-MM-dd HH:mm"));
+        commentItem.setContent(comment.getContent());
+        commentItem.setUid(comment.getUid());
+        commentItem.setUsername(comment.getUser());
+        return commentItem;
+    }
+
+
 }
 
 

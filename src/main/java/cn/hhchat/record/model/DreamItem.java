@@ -1,6 +1,7 @@
 package cn.hhchat.record.model;
 
 import cn.hhchat.record.Config;
+import cn.hhchat.record.model.item.ProcessItem;
 import cn.hhchat.record.util.FileUtil;
 import cn.hhchat.record.util.ImgUtil;
 import cn.hhchat.record.util.MarkdownUtil;
@@ -16,20 +17,19 @@ import java.util.List;
  */
 @Data
 @Slf4j
-public class Dream {
+public class DreamItem {
 
-    public String title;
-    public List<String> userList;
-    public String owner;
-    public String img;
-    public String imgLocal;
-    public List<ProcessItem> processList;
-    public String nianId;
-    public String introduce;
-
-    public String getPageUrl() {
-        return Config.getHtml("thing.php?id=" + nianId);
-    }
+    private String title;
+    private List<String> tags;
+    private String ownerId;
+    private String ownerName;
+    private String img;
+    private String imgLocal;
+    private Boolean privateDream;
+    private List<ProcessItem> processList;
+    private String id;
+    private String introduce;
+    private Boolean finished = false;
 
     public Boolean saveCoverToLocal() {
         log.info("尝试下载梦想 {} 的封面", this.title);
@@ -47,18 +47,31 @@ public class Dream {
 
     public String toMD(User user) {
         String img = this.img;
-        if (Config.DOWNLOAD_IMAGES || this.imgLocal!=null) {
-            img = this.imgLocal;
-        }
+        //if (Config.DOWNLOAD_IMAGES || this.imgLocal != null) {
+        //    img = this.imgLocal;
+        //}
 
         StringBuilder sb = new StringBuilder();
         sb.append(MarkdownUtil.header1(this.title)).append(MarkdownUtil.emptyLine());
 
         if (img != null) {
-            sb.append(MarkdownUtil.smallImage("cover", img, true))
-                    .append(MarkdownUtil.emptyLine());
+            sb.append(MarkdownUtil.smallImage("cover", img, true));
         }
 
+        // add introduce
+        sb.append(this.introduce);
+        // add tags
+        if(this.privateDream){
+            sb.append(MarkdownUtil.code("私有"));
+        }
+        if(this.finished){
+            sb.append(MarkdownUtil.code("已完成"));
+        }
+        for (String tag : tags) {
+            sb.append(MarkdownUtil.code(tag));
+        }
+
+        sb.append(MarkdownUtil.emptyLine()).append(MarkdownUtil.emptyLine());
         sb.append(MarkdownUtil.oneLine(user.getNickname()))
                 .append(MarkdownUtil.emptyLine())
                 .append(MarkdownUtil.quote("生成时间 " + DateUtil.format(new Date(), "yyyy-MM-dd")))
@@ -69,27 +82,16 @@ public class Dream {
             return sb.toString();
         }
         int count = 0;
-        if (Config.REVERSE) {
-            for (int i = 0; i < this.processList.size(); i++) {
-                log.info("生成第 {}/{} 个进展的 markdown", ++count, this.processList.size());
-                sb.append(processList.get(i).toMD())
-                        .append(MarkdownUtil.emptyLine())
-                        .append(MarkdownUtil.emptyBrLine())
-                        .append(MarkdownUtil.hr())
-                        .append(MarkdownUtil.emptyBrLine())
-                        .append(MarkdownUtil.emptyLine());
-            }
-        } else {
-            for (int i = this.processList.size() - 1; i >= 0; i--) {
-                log.info("生成第 {}/{} 个进展的 markdown", ++count, this.processList.size());
-                sb.append(processList.get(i).toMD())
-                        .append(MarkdownUtil.emptyLine())
-                        .append(MarkdownUtil.emptyBrLine())
-                        .append(MarkdownUtil.hr())
-                        .append(MarkdownUtil.emptyBrLine())
-                        .append(MarkdownUtil.emptyLine());
-            }
+        for (int i = this.processList.size() - 1; i >= 0; i--) {
+            log.info("生成第 {}/{} 个进展的 markdown", ++count, this.processList.size());
+            sb.append(processList.get(i).toMD())
+                    .append(MarkdownUtil.emptyLine())
+                    .append(MarkdownUtil.emptyBrLine())
+                    .append(MarkdownUtil.hr())
+                    .append(MarkdownUtil.emptyBrLine())
+                    .append(MarkdownUtil.emptyLine());
         }
+
 
         sb.append(MarkdownUtil.emptyLine())
                 .append(MarkdownUtil.quote("到底啦! 这个梦想一共 " + this.processList.size() + " 条进展呢"))
@@ -97,4 +99,11 @@ public class Dream {
         return sb.toString();
     }
 
+    @Override
+    public String toString() {
+        return "DreamItem{" +
+                "title='" + title + '\'' +
+                ", nianId='" + id + '\'' +
+                '}';
+    }
 }
