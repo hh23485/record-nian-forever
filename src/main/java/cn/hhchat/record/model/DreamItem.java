@@ -19,16 +19,17 @@ import java.util.List;
 @Slf4j
 public class DreamItem {
 
-    public String title;
-    public List<String> userList;
-    public String ownerId;
-    public String ownerName;
-    public String img;
-    public String imgLocal;
-    public List<ProcessItem> processList;
-    public String nianId;
-    public String introduce;
-    public Boolean finished = false;
+    private String title;
+    private List<String> tags;
+    private String ownerId;
+    private String ownerName;
+    private String img;
+    private String imgLocal;
+    private Boolean privateDream;
+    private List<ProcessItem> processList;
+    private String id;
+    private String introduce;
+    private Boolean finished = false;
 
     public Boolean saveCoverToLocal() {
         log.info("尝试下载梦想 {} 的封面", this.title);
@@ -46,18 +47,31 @@ public class DreamItem {
 
     public String toMD(User user) {
         String img = this.img;
-        if (Config.DOWNLOAD_IMAGES || this.imgLocal != null) {
-            img = this.imgLocal;
-        }
+        //if (Config.DOWNLOAD_IMAGES || this.imgLocal != null) {
+        //    img = this.imgLocal;
+        //}
 
         StringBuilder sb = new StringBuilder();
         sb.append(MarkdownUtil.header1(this.title)).append(MarkdownUtil.emptyLine());
 
         if (img != null) {
-            sb.append(MarkdownUtil.smallImage("cover", img, true))
-                    .append(MarkdownUtil.emptyLine());
+            sb.append(MarkdownUtil.smallImage("cover", img, true));
         }
 
+        // add introduce
+        sb.append(this.introduce);
+        // add tags
+        if(this.privateDream){
+            sb.append(MarkdownUtil.code("私有"));
+        }
+        if(this.finished){
+            sb.append(MarkdownUtil.code("已完成"));
+        }
+        for (String tag : tags) {
+            sb.append(MarkdownUtil.code(tag));
+        }
+
+        sb.append(MarkdownUtil.emptyLine()).append(MarkdownUtil.emptyLine());
         sb.append(MarkdownUtil.oneLine(user.getNickname()))
                 .append(MarkdownUtil.emptyLine())
                 .append(MarkdownUtil.quote("生成时间 " + DateUtil.format(new Date(), "yyyy-MM-dd")))
@@ -89,7 +103,7 @@ public class DreamItem {
     public String toString() {
         return "DreamItem{" +
                 "title='" + title + '\'' +
-                ", nianId='" + nianId + '\'' +
+                ", nianId='" + id + '\'' +
                 '}';
     }
 }

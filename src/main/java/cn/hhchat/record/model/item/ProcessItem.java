@@ -56,14 +56,14 @@ public class ProcessItem {
         if (imgList == null) {
             imgList = new ArrayList<>();
         }
-        if (Config.DOWNLOAD_IMAGES || CollectionUtil.isNotEmpty(this.imageLocalList)) {
-            imgList = this.imageLocalList;
-        }
+        //if (Config.DOWNLOAD_IMAGES || CollectionUtil.isNotEmpty(this.imageLocalList)) {
+        //    imgList = this.imageLocalList;
+        //}
 
         StringBuilder sb = new StringBuilder();
 
-        String poster = Config.UID.equals(this.uid) ? "" : this.username;
-        sb.append(MarkdownUtil.oneLine("进展 " + id +"  from: "+ poster))
+        String poster = Config.UID.equals(this.uid) ? "" : "  from: " + this.username;
+        sb.append(MarkdownUtil.oneLine("进展 " + id + poster))
                 .append(MarkdownUtil.emptyLine());
 
         for (int i = 0; i < imgList.size(); i++) {
@@ -81,8 +81,11 @@ public class ProcessItem {
                 .append(MarkdownUtil.emptyLine())
                 .append(MarkdownUtil.quote(this.createTime + "  赞  " + this.coolCnt + " "));
 
-        for (int i = this.commentItemList.size() - 1; i >= 0; i--) {
-            sb.append(this.commentItemList.get(i).toMD());
+        // 添加评论
+        if(CollectionUtil.isNotEmpty(this.commentItemList)){
+            for (int i = this.commentItemList.size() - 1; i >= 0; i--) {
+                sb.append(this.commentItemList.get(i).toMD());
+            }
         }
 
         return sb.toString();
