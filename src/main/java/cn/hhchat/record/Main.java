@@ -12,9 +12,11 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +30,7 @@ public class Main {
 
         File file = new File(".");
         Config.ROOT = file.getAbsolutePath() + "/";
-        Config.ROOT = "/Users/huminghao/Desktop/nian.so/";
+        Config.ROOT = "/Users/HMH/Desktop/nian.so/";
 
 
         if (!Config.load()) {
@@ -58,12 +60,16 @@ public class Main {
             user.setNickname(Config.NAME);
             log.info(" => 用户 {}", user.getNickname());
 
-            DreamHelper dreamHelper = new DreamHelper();
-            List<DreamItem> dreamItemList = dreamHelper.getAllBooks(client);
-            log.info(" => 所有的记本 {}", dreamItemList);
+            DreamHelper dreamHelper = new DreamHelper(client);
+            List<DreamItem> dreamItemList = dreamHelper.getAllBooks();
 
-            ProcessHelper processHelper = new ProcessHelper();
-            processHelper.getAllProcess(client, dreamItemList);
+            if(!ensureDreams(dreamItemList)){
+                log.info("已退出");
+                return;
+            }
+
+            ProcessHelper processHelper = new ProcessHelper(client);
+            processHelper.getAllProcess(dreamItemList);
 
             nian = new Nian();
             nian.setUser(user);
@@ -113,6 +119,17 @@ public class Main {
             }
         });
         return builder.build();
+    }
+
+    private static boolean ensureDreams(List<DreamItem> dreamItemList) {
+        for (DreamItem dreamItem : dreamItemList) {
+            System.out.println(" => 发现记本: " + dreamItem.getTitle());
+        }
+        Scanner scanner = new Scanner(System.in);
+        System.err.println(" => 请确认上方发现的记本都是你需要导出的，否则可能会有超过想象的耗时，并且无法得到想要的记录！！");
+        System.err.println(" => 如果确认，请输入y，并按回车继续；如有错误，按n停止");
+        String input = scanner.next().trim();
+        return input.startsWith("y") || input.startsWith("Y");
     }
 }
 
