@@ -1,5 +1,6 @@
 package cn.hhchat.record.model;
 
+import cn.hhchat.record.helper.ApiHelper;
 import cn.hhchat.record.util.FileUtil;
 import cn.hhchat.record.util.ImgUtil;
 import cn.hhchat.record.util.MarkdownUtil;
@@ -20,6 +21,11 @@ public class User {
     String id;
     //List<User> watchList;
     //List<User> followList;
+
+    public void setId(String id) {
+        this.id = id;
+        this.img = ApiHelper.getHeaderImageUrl();
+    }
 
     public String toMD() {
         StringBuilder sb = new StringBuilder();

@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ import java.util.List;
 public class Config {
 
     public static final String DOMAIN = "http://nian.so/";
+    public static String NAME = "";
     public static String COOKIE = "";
     public static String SHELL = "";
     public static String UID = "";
@@ -30,6 +32,7 @@ public class Config {
     public static Boolean REVERSE = false;
     public static Boolean DOWNLOAD_IMAGES = false;
     public static Boolean USE_JSON_DATA = false;
+    public static List<String> WHITE_LIST = new ArrayList<>();
 
 
     public static String getHtml(String path) {
@@ -54,6 +57,7 @@ public class Config {
                 REVERSE = Boolean.valueOf(String.valueOf(config.get("REVERSE")));
                 DOWNLOAD_IMAGES = Boolean.valueOf(String.valueOf(config.get("DOWNLOAD_IMAGES")));
                 USE_JSON_DATA = Boolean.valueOf(String.valueOf(config.get("USE_JSON_DATA")));
+                WHITE_LIST = config.getJSONArray("WHITE_LIST").toList(String.class);
                 return true;
             }else{
                 log.error(" => 没有找到配置文件文件");

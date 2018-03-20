@@ -1,6 +1,7 @@
-package cn.hhchat.record.model;
+package cn.hhchat.record.model.item;
 
 import cn.hhchat.record.Config;
+import cn.hhchat.record.model.Cool;
 import cn.hhchat.record.util.FileUtil;
 import cn.hhchat.record.util.ImgUtil;
 import cn.hhchat.record.util.MarkdownUtil;
@@ -19,12 +20,14 @@ import java.util.List;
 public class ProcessItem {
 
     String id;
+    String username;
+    String uid;
     List<String> text;
     List<String> imageList;
     List<String> imageLocalList = new ArrayList<>();
-    List<Comment> comments;
+    List<CommentItem> commentItemList;
     List<Cool> coolList;
-    String coolCnt;
+    Integer coolCnt;
     String createTime;
 
     public Boolean saveImagesToLocal(String title) {
@@ -59,7 +62,8 @@ public class ProcessItem {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(MarkdownUtil.oneLine("进展 " + id))
+        String poster = Config.UID.equals(this.uid) ? "" : this.username;
+        sb.append(MarkdownUtil.oneLine("进展 " + id +"  from: "+ poster))
                 .append(MarkdownUtil.emptyLine());
 
         for (int i = 0; i < imgList.size(); i++) {
@@ -75,7 +79,12 @@ public class ProcessItem {
         }
         sb.append(MarkdownUtil.emptyLine())
                 .append(MarkdownUtil.emptyLine())
-                .append(MarkdownUtil.quote(this.createTime + " " + this.coolCnt));
+                .append(MarkdownUtil.quote(this.createTime + "  赞  " + this.coolCnt + " "));
+
+        for (int i = this.commentItemList.size() - 1; i >= 0; i--) {
+            sb.append(this.commentItemList.get(i).toMD());
+        }
+
         return sb.toString();
     }
 }
