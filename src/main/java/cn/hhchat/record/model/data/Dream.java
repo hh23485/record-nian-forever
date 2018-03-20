@@ -2,6 +2,9 @@ package cn.hhchat.record.model.data;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created this one by huminghao on 2018/3/20.
  */
@@ -13,13 +16,8 @@ public class Dream {
     private String title;
     private String content;
     private Integer percent;
-    private String lastdate;
     private String image;
-    private String click;
-    private String friend;
-    private String follow;
-    private String like;
+    private Integer privateDream;
     private String step;
-    private String isliked;
-    private String like_step;
+    private List<String> tags = new ArrayList<>();
 }

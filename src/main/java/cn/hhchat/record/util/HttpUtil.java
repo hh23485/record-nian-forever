@@ -15,6 +15,9 @@ public class HttpUtil {
 
     public static JSONObject isOk(Response response) {
         if(!response.isSuccessful()){
+            if (response.code() == 502) {
+                log.error("念的服务器崩溃啦!");
+            }
             return null;
         }
         String body = null;

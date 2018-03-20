@@ -22,12 +22,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DreamHelper {
 
+    private OkHttpClient client;
 
-    public List<DreamItem> getAllBooks(OkHttpClient client) {
+    public DreamHelper(OkHttpClient client) {
+        this.client = client;
+    }
 
+    public List<DreamItem> getAllBooks() {
         JSONArray dreamJsonList;
         do {
-            dreamJsonList = getAllBooksElement(client);
+            dreamJsonList = getAllBooksElement();
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -35,11 +39,11 @@ public class DreamHelper {
             }
         } while (CollectionUtil.isEmpty(dreamJsonList));
 
-        return analizyerBooks(dreamJsonList);
+        return analyzeBooks(dreamJsonList);
 
     }
 
-    public JSONArray getAllBooksElement(OkHttpClient client) {
+    public JSONArray getAllBooksElement() {
         Request request = new Request.Builder().url(ApiHelper.getAllDreamsUrl()).build();
         Response response;
         try {
@@ -56,31 +60,63 @@ public class DreamHelper {
     }
 
 
-    private List<DreamItem> analizyerBooks(JSONArray dreamJSONList) {
+    private List<DreamItem> analyzeBooks(JSONArray dreamJSONList) {
         List<DreamItem> dreamItemList = new ArrayList<>();
         for (int i = 0; i < dreamJSONList.size(); i++) {
-            DreamItem dreamItem = analizyer(dreamJSONList.getJSONObject(i));
+            DreamItem dreamItem = analyze(dreamJSONList.getJSONObject(i));
             dreamItemList.add(dreamItem);
         }
-        return dreamItemList.stream().filter(d -> !Config.WHITE_LIST.contains(d.getTitle())).collect(Collectors.toList());
+        return dreamItemList.stream().filter(d -> Config.WANT_MULTIDREAM || Config.UID.equals(d.getOwnerId())).filter(d -> Config.inWhiteList(d.getTitle())).filter(d -> !Config.inBlackList(d.getTitle())).collect(Collectors.toList());
     }
+
 
     /*
       解析记本
      */
-    private DreamItem analizyer(JSONObject jsonObject) {
+    private DreamItem analyze(JSONObject jsonObject) {
 
         // 获取 记本信息
+        String dreamId = jsonObject.getString("id");
+        JSONObject detailJsonObject = null;
+        int count = 10;
+
+        while (detailJsonObject == null && count-- > 0) {
+            detailJsonObject = getDreamDetail(dreamId);
+        }
+
+        //用更详细的替换
+        if(detailJsonObject!=null){
+            jsonObject = detailJsonObject;
+        }
+
         Dream dream = jsonObject.toJavaObject(Dream.class);
         DreamItem dreamItem = new DreamItem();
         dreamItem.setTitle(dream.getTitle());
         dreamItem.setImg(ApiHelper.getDreamImageUrl(dream.getImage()));
-        dreamItem.setNianId(dream.getId());
+        dreamItem.setId(dream.getId());
         dreamItem.setOwnerId(dream.getUid());
         dreamItem.setOwnerName(dream.getUser());
         dreamItem.setIntroduce(dream.getContent());
+        dreamItem.setTags(dream.getTags());
         dreamItem.setFinished(dream.getPercent() != null && dream.getPercent() == 1);
+        dreamItem.setPrivateDream(dream.getPrivateDream() != null && dream.getPercent() == 1);
         return dreamItem;
 
+    }
+
+    public JSONObject getDreamDetail(String dreamId) {
+        Request request = new Request.Builder().url(ApiHelper.getDreamDetailUrl(dreamId)).build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+            JSONObject jsonResponse = HttpUtil.isOk(response);
+            if (jsonResponse != null && jsonResponse.getInteger("error") == 0) {
+                JSONObject jsonData = jsonResponse.getJSONObject("data");
+                return jsonData.getJSONObject("dream");
+            }
+        } catch (Exception e) {
+            log.error(" => 获取 梦想 详情失败: {}", dreamId, e.getMessage());
+        }
+        return null;
     }
 }
