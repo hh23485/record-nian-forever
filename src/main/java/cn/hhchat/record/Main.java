@@ -12,6 +12,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,13 @@ public class Main {
         Nian nian = null;
 
         File file = new File(".");
-        Config.ROOT = file.getAbsolutePath() + "/";
+
+        try {
+            Config.ROOT = file.getCanonicalPath() + File.separator;
+        } catch (IOException e) {
+            log.error("路径出错 {}", file.getAbsolutePath());
+            return;
+        }
 
 
         if (!Config.load()) {

@@ -22,28 +22,28 @@ import java.nio.file.Paths;
 public class FileUtil {
 
     public static String generateProcessImgPath(String id, String processId, String fileName) {
-        return Config.ROOT + "nian/image/" +  id + "/process/" + processId + "-" + fileName;
+        return Config.ROOT + "nian" + File.separator + "image" + File.separator + id + File.separator + "process" + File.separator + processId + "-" + fileName;
     }
 
     public static String generateHeadImgPath(String nickname, String fileName) {
-        return Config.ROOT + "nian/image/header/" + nickname + "-" + fileName;
+        return Config.ROOT + "nian" + File.separator + "image" + File.separator + "header" + File.separator + nickname + "-" + fileName;
     }
 
     public static String generateCoverImgPath(String id, String fileName) {
-        return Config.ROOT + "nian/image/" + id + "/cover-" + fileName;
+        return Config.ROOT + "nian" + File.separator + "image" + File.separator + id + File.separator + "cover-" + fileName;
     }
 
     public static String generateMDPath(String title) {
-        return Config.ROOT + "nian/md/"+ title + "/dream - " + title + ".md";
+        return Config.ROOT + "nian" + File.separator + "md" + File.separator + title + File.separator + "dream - " + title + ".md";
     }
 
     public static String generateJSONPath() {
-        return Config.ROOT + "nian/json/data.json";
+        return Config.ROOT + "nian" + File.separator + "json" + File.separator + "data.json";
     }
 
     public static boolean writeNewFile(String path, String content) {
         File file = new File(path);
-        if(!ensureFile(path)){
+        if (!ensureFile(path)) {
             return false;
         }
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
@@ -78,7 +78,7 @@ public class FileUtil {
             byte[] imageContents = null;
             imageContents = com.xiaoleilu.hutool.io.FileUtil.readBytes(new File(filePath));
             return imageContents;
-        } catch ( Exception e) {
+        } catch (Exception e) {
             log.error(" => 读取图片失败 {}", e.getMessage());
         }
         return null;
