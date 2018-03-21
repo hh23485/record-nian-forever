@@ -30,7 +30,6 @@ public class Main {
 
         File file = new File(".");
         Config.ROOT = file.getAbsolutePath() + "/";
-        Config.ROOT = "/Users/HMH/Desktop/nian.so/";
 
 
         if (!Config.load()) {
