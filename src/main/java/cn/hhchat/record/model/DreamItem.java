@@ -59,7 +59,7 @@ public class DreamItem {
         }
 
         // add introduce
-        sb.append(this.introduce);
+        sb.append(this.introduce).append(" ");
         // add tags
         if(this.privateDream){
             sb.append(MarkdownUtil.code("私有"));
