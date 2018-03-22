@@ -39,7 +39,7 @@ public class ProcessItem {
             String pic = imageList.get(i);
             String localFileName = FileUtil.generateProcessImgPath(title, this.id, ImgUtil.getImageFileName(pic));
             int count = 10;
-            while (!ImgUtil.FetchImage(pic + "!large", localFileName) && count-- > 0) {
+            while (!ImgUtil.FetchImage(pic, localFileName) && count-- > 0) {
                 log.warn(" => 下载进展的图片失败，重试中");
             }
             if (count == -1) {

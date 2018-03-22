@@ -37,7 +37,7 @@ public class User {
         log.info(" => 下载头像");
         String localFileName = FileUtil.generateHeadImgPath(nickname, ImgUtil.getImageFileName(this.getImg()));
         int count = 10;
-        while (!ImgUtil.FetchImage(img + "!head", localFileName) && count-- > 0) {
+        while (!ImgUtil.FetchImage(img, localFileName) && count-- > 0) {
             log.warn("下载 {} 的头像图失败，重试中", img);
         }
         if (count == -1) {

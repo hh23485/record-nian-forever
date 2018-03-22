@@ -10,6 +10,7 @@ import cn.hhchat.record.model.item.ProcessItem;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoleilu.hutool.date.DateUtil;
+import com.xiaoleilu.hutool.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -159,7 +160,11 @@ public class ProcessHelper {
 
 
     public List<String> processImageList(Step step) {
-        return step.getImages().stream().map(img -> ApiHelper.getProcessImageUrl(img.getPath())).collect(Collectors.toList());
+        List<String> imgList = step.getImages().stream().map(img -> ApiHelper.getProcessImageUrl(img.getPath())).collect(Collectors.toList());
+        if(StrUtil.isNotBlank(step.getImage())){
+            imgList.add(ApiHelper.getProcessImageUrl(step.getImage()));
+        }
+        return imgList.stream().distinct().collect(Collectors.toList());
     }
 
     private List<String> processTextContent(Step step) {
