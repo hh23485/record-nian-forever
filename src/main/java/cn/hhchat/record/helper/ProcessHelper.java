@@ -7,6 +7,7 @@ import cn.hhchat.record.model.data.Step;
 import cn.hhchat.record.model.item.CommentItem;
 import cn.hhchat.record.util.HttpUtil;
 import cn.hhchat.record.model.item.ProcessItem;
+import cn.hhchat.record.util.StringHelper;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoleilu.hutool.date.DateUtil;
@@ -168,7 +169,7 @@ public class ProcessHelper {
     }
 
     private List<String> processTextContent(Step step) {
-        String[] strLines = step.getContent().trim().split("\\n");
+        String[] strLines = StringHelper.removeEscape(step.getContent().trim()).split("\\n");
         List<String> lineList = new ArrayList<>();
         for (String line : strLines) {
             lineList.add(line.trim());
@@ -238,7 +239,7 @@ public class ProcessHelper {
         Comment comment = jsonComment.toJavaObject(Comment.class);
         CommentItem commentItem = new CommentItem();
         commentItem.setCreateTime(DateUtil.date(comment.getLastdate() * 1000).toString("yyyy-MM-dd HH:mm"));
-        commentItem.setContent(comment.getContent());
+        commentItem.setContent(StringHelper.removeEscape(comment.getContent()));
         commentItem.setUid(comment.getUid());
         commentItem.setUsername(comment.getUser());
         return commentItem;

@@ -4,6 +4,7 @@ import cn.hhchat.record.Config;
 import cn.hhchat.record.model.DreamItem;
 import cn.hhchat.record.model.data.Dream;
 import cn.hhchat.record.util.HttpUtil;
+import cn.hhchat.record.util.StringHelper;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoleilu.hutool.collection.CollectionUtil;
@@ -91,13 +92,13 @@ public class DreamHelper {
 
         Dream dream = jsonObject.toJavaObject(Dream.class);
         DreamItem dreamItem = new DreamItem();
-        dreamItem.setTitle(dream.getTitle());
+        dreamItem.setTitle(StringHelper.removeEscape(dream.getTitle()));
         dreamItem.setImg(ApiHelper.getDreamImageUrl(dream.getImage()));
         dreamItem.setId(dream.getId());
         dreamItem.setOwnerId(dream.getUid());
         dreamItem.setOwnerName(dream.getUser());
-        dreamItem.setIntroduce(dream.getContent());
-        dreamItem.setTags(dream.getTags());
+        dreamItem.setIntroduce(StringHelper.removeEscape(dream.getContent()));
+        dreamItem.setTags(dream.getTags().stream().map(StringHelper::removeEscape).collect(Collectors.toList()));
         dreamItem.setFinished(dream.getPercent() != null && dream.getPercent() == 1);
         dreamItem.setPrivateDream(dream.getPrivateDream() != null && dream.getPercent() == 1);
         return dreamItem;
