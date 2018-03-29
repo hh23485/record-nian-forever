@@ -67,7 +67,7 @@ public class Config {
 
     public static Boolean load() {
         try {
-            Path path = Paths.get(new URI("file:"+ROOT + "config.json"));
+            Path path = Paths.get(ROOT + "config.json");
             if (Files.exists(path)) {
                 List<String> configStrList = Files.readAllLines(path);
                 StringBuilder stringBuilder = new StringBuilder();
@@ -91,8 +91,6 @@ public class Config {
             }else{
                 log.error(" => 没有找到配置文件文件");
             }
-        } catch (URISyntaxException e) {
-            log.error(" => 配置文件路径错误: {}", e.getMessage());
         } catch (Exception e) {
             log.error(" => 读取配置文件失败: {}", e.getMessage());
         }
