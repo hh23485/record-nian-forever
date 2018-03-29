@@ -33,13 +33,13 @@ public class JsonHelper {
     public static Nian load() {
         String jsonFile = FileUtil.generateJSONPath();
         try {
-            Path path = Paths.get(new URI("file:" + jsonFile));
+            Path path = Paths.get(jsonFile);
             List<String> jsonStrList = Files.readAllLines(path);
             String jsonNian = jsonStrList.get(0);
             Nian nian = JSON.parseObject(jsonNian, Nian.class);
             Config.UID = nian.getUser().getId();
             return nian;
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             log.info("获取json数据出错 {}，请检查json文件是否存在，以及是否被改动过", e.getMessage());
         }
         return null;

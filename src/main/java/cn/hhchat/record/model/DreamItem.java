@@ -35,7 +35,7 @@ public class DreamItem {
         log.info("尝试下载梦想 {} 的封面", this.title);
         String localFileName = FileUtil.generateCoverImgPath(this.getTitle(), ImgUtil.getImageFileName(this.getImg()));
         int count = 10;
-        while (!ImgUtil.FetchImage(this.img + "!dream", localFileName) && count-- > 0) {
+        while (!ImgUtil.FetchImage(this.img, localFileName) && count-- > 0) {
             log.warn("下载 {} 的封面图失败，重试中", this.title);
         }
         if (count == -1) {
@@ -59,7 +59,7 @@ public class DreamItem {
         }
 
         // add introduce
-        sb.append(this.introduce);
+        sb.append(this.introduce).append(" ");
         // add tags
         if(this.privateDream){
             sb.append(MarkdownUtil.code("私有"));

@@ -39,7 +39,7 @@ public class ImgUtil {
     }
 
     public static String getImageFileName(String url) {
-        return url.substring(url.lastIndexOf("/") + 1);
+        return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("!"));
     }
 
     public static String getBackGroundImage(Element backBox) {
