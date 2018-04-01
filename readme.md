@@ -1,3 +1,4 @@
+
 # 念 - 告别
 
 念是一个一天不更就会被删号的记事应用。它不把那一个个的记本称为"记本"，而叫做"梦想"。要你记录着一天天的一天天的在梦想上留下的脚印，丝毫不能忘记。
@@ -6,7 +7,9 @@
 
 更有意思的是，你会看到 “就算一个人早餐也要好好吃”，这样坚持做好自己的事情来让世界变美好的念本。以及能够让小心翼翼的人们可以坦然问出疑问的 “所有人问所有人” （从气氛来说比知乎好太多了。。。
 
-Sa 保护着他的念和念主们，没有一丝一毫的广告，虽然遗憾与逃不过经济和精力的问题。走到了尽头，就意味着那些有趣的世界，要消失了。
+Sa 保护着他的念和念的朋友们，没有一丝一毫的广告，虽然终究遗憾的逃不过经济和精力的问题。
+
+<!--more-->
 
 # 念 - 存档
 
@@ -14,15 +17,18 @@ Sa 保护着他的念和念主们，没有一丝一毫的广告，虽然遗憾�
 
 我是一个程序员小哥，就算是在春招的关键时期，我还是加班熬夜，做了这样的一个小程序。我想要帮大家把那些，暗淡的或者璀璨的梦想，都存储成一个个漂亮的小册子，然后互相分享、纪念和收藏。
 
-<!--more-->
+
+**不要怕麻烦！！真的只要安装上java，然后填写账号密码，双击启动就行！！**
+
 
 # 上手备份
 
 ## 你需要什么
 
 - 电脑 （什么系统都可以
-- Java 1.8 的环境 （文科生不要怕，这很简单
+- ~~Java 1.8 的环境 （文科生不要怕，这很简单~~
 - 在念里绑定了邮箱和密码
+- 安装 **notepad++** 或者 **sublime**
 
 ## 你会获得什么
 
@@ -67,11 +73,11 @@ Sa 保护着他的念和念主们，没有一丝一毫的广告，虽然遗憾�
 
 从总的步骤上来说，分为这样几步啦：
 
-1. 确保安装 Java （如果不明白下节有详细的教程
-2. 下载工具压缩包
+1. ~~确保安装 Java （不要修改安装路径，如果不明白下节有详细的教程~~
+2. [**下载工具**](https://pan.baidu.com/s/1t7wjp8Q6Zkcola8N_JtJHw)压缩包 v1.3 免JRE
 3. 解压以后放在一个文件夹里
 4. 查看一下配置文件，做必要的修改  （一般只需要打开填上邮箱密码即可
-5. 双击 `确认配置后点我启动.bat` 启动
+5. 双击 `备份你的念` 启动
 6. 确认你要导出的记本
 6. 等待完成
 7. 查看文件
@@ -87,44 +93,19 @@ Sa 保护着他的念和念主们，没有一丝一毫的广告，虽然遗憾�
 
 # 操作细节
 
-## 安装 Java
-
-安装 Java 有很多的教程，我找了一些比较靠谱的放在这里。如果你已经有 Java 的运行环境，请确认他的版本是 `1.8.*`
-
-### 下载 jre
-
-jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
-
-你可以到 [Java 官方](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) 下载jre。
-
-![image.png](https://upload-images.jianshu.io/upload_images/1846712-e3e76e6989580965.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-安装教程可以查看 [教程](http://blog.csdn.net/zhangyong01245/article/details/75142870)，你可以忽略其中 `jdk` 和 `jre` 的区别，按我给的官方下载地址下载就好。
-
-安装完成后，进入下一步 → 查看版本
-
-### 查看 jre 版本
-
-- 在命令提示符中输入 `java -version`，看是否会输出如下的反馈。
-
-![image.png](https://upload-images.jianshu.io/upload_images/1846712-222c17b19d573e4d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-如果可以的话，说明你的 java 是可以使用的，否则你可能需要参考一下，你需要保证 version 是 1.8 开头的。
-
-
 ## 下载工具包并放到同一个文件夹中
 
-这是一个开源 Java 应用，你可以在我的 [github](https://github.com/hh23485/record-nian-forever/releases) 上下载它。
+这是一个开源 Java 应用，你可以在 [百度网盘](https://pan.baidu.com/s/1t7wjp8Q6Zkcola8N_JtJHw) 上下载它。
 
 下载解压之后呢，你会看到三个文件：
 
-- `config.json`: 用于存放相关的配置参数
-- `record-nian-forever-1.0-jar-with-dependencies.jar`: 主要的工具
-- `确认配置后点我启动.bat`：用于启动工具
+- `config.json`: 用于存放相关的配置参数，需要通过notepad++或者sublime打开
+- `备份你的念.exe`: 主要的工具
+- `jre`：内嵌的java运行环境（再也不用安装jre了
 
 放在同一个文件夹就如下所示了：
 
-![image.png](https://upload-images.jianshu.io/upload_images/1846712-0f55e233b5937600.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](https://upload-images.jianshu.io/upload_images/1846712-3c007fe79bb7637d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 如果你是 windows，就先进入配置填写好邮箱和密码并保存，然后双击 `点我启动` 来启动吧，你会看到一个黑框口，告诉你实时的进展。你可以最小化，但是你不能关上它，否则就会停止工作。
 
@@ -145,6 +126,7 @@ jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
 - 你的念已经绑定的邮箱，可以使用邮箱登陆
 - 在配置文件中添加你的邮箱
 - 在配置文件中添加你的密码
+- 只能使用**notepad**++或者**sublime**来修改，不可以使用记事本
 
 默认的配置文件如下所示：
 
@@ -254,15 +236,10 @@ jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
 
 #### windows
 
-如果你在 windows 下面使用，那你需要先确认 java 是否安装成功：
+如果你在 windows 下面使用，你只需要解压，然后双击那个有图标的exe就行了。
 
-- 在命令提示符中输入 `java -version`，看是否会输出如下的反馈。
 
-![image.png](https://upload-images.jianshu.io/upload_images/1846712-222c17b19d573e4d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-如果可以的话，说明你的 java 是可以使用的，否则你可能回顾一下上面的[安装 java]。
-
-在**确认配置没有问题的情况下！！**，你可以双击`确认配置后点我启动.bat`启动了。
+在**确认配置没有问题的情况下！！**，你可以双击`备份你的念`启动了。
 
 启动以后工具会做如下几件事情：
 
@@ -277,9 +254,11 @@ jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
 8. 保存成 json
 9. 保存成 markdown
 
+**最后的最后，生成markdown之后，一定要生成PDF！！markdown里的图片是会在念下架后失效的！！**
+
 #### linux 和 mac
 
-都用 *nix 了就不用多说了吧。。。
+都用 *nix 了就不用多说了吧。。。编译源码吧
 
 ### 疑问
 
@@ -297,7 +276,9 @@ jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
 
 希望你喜欢。
 
-## 查看 Markdown 并变成 PDF
+## （必要）查看 Markdown 并变成 PDF
+
+**生成markdown之后，一定要生成PDF！！markdown里的图片是会在念下架后失效的！！**
 
 市面上有非常多的 markdown 编辑或者阅读器，可以帮你转换成 pdf。
 
@@ -337,7 +318,7 @@ jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
 
 ## 获取好看的 PDF
 
-你可以将工具生成的 json 文件发送给我，并在邮件里按照下面格式填写，发送至 `hh23485@126.com`：
+你可以将工具生成的 **data.json** 文件发送给我，并在邮件里按照下面格式填写，发送至 `hh23485@126.com`：
 
 ```
 是否需要拆分单个念本：【需要】/【不需要】
@@ -380,11 +361,37 @@ jre 是 Java 程序运行必须依赖的环境，所以你不得不下载啦。
 下面是经过授权，同意公开的念本，你可以下载和查看样式，决定是否使用工具，也可以用于收藏和分享~ 
 **但转发仍然需要联系授权**
 
-- [如xo酱-茶楼](https://pan.baidu.com/s/11H7nEzCuFzFVKiPEtDDNjA)
-- [如xo酱-唯有好吃的不能辜负](https://pan.baidu.com/s/1tN9KcbryBIh-4LMIWgi3Uw)
-- [如xo酱-随手写的估计](https://pan.baidu.com/s/1O_v9iWQTbCYXEXjfCPttaA)
-- [混沌馄饨-你拍一我拍一，馄饨店里做游戏](https://pan.baidu.com/s/1tHvQrLNfKtg6AZsBekvWaQ)
+1. [如xo酱-茶楼](https://pan.baidu.com/s/1BHti9eW1NhSc6N_5kOwa1g)
+2. [如xo酱-唯有好吃的不能辜负](https://pan.baidu.com/s/1tN9KcbryBIh-4LMIWgi3Uw)
+3. [如xo酱-随手写的故事](https://pan.baidu.com/s/1O_v9iWQTbCYXEXjfCPttaA)
+4. [混沌馄饨-你拍一我拍一，馄饨店里做游戏](https://pan.baidu.com/s/1tHvQrLNfKtg6AZsBekvWaQ)
+5. [阿城_-SISU](https://pan.baidu.com/s/1FsFF6lILPWOgO-4W0vewdQ)
+6. [阿城_-字与日子](https://pan.baidu.com/s/1-yecitdoY5SzZy53uXONSA)
+6. [大王色的向日葵-小小手工](https://pan.baidu.com/s/1TSaPaG0PPzm5Cl29qM4pQA)
+7. [大王色的向日葵-嘴巴说想吃](https://pan.baidu.com/s/1LygB06ry6iir-VrUlbT6AQ)
+8. [大王色的向日葵-我想告诉你](https://pan.baidu.com/s/1o1kLy87tFwNC_swYmMXHng)
+9. [努力的小透明-喜欢的句子](https://pan.baidu.com/s/1u_oZJiUNudFvS18hllSA9g)
+10. [轩辕淏然-每日一折or几折](https://pan.baidu.com/s/16-4KsYLfLfLLlfKUPmqfVA)
+11. [KISSINGMIS-琐谈](https://pan.baidu.com/s/1rGcSW5KgPCrCyPo-DHv3Ww)
+12. [高光里的噪点-一日一图一心一意](https://pan.baidu.com/s/1xW1N_O1OxooHx1eYKx8zhA)
+13. [萧未戚-植物互助⼩组](https://pan.baidu.com/s/1wpIjZ5F3GDScgUk72257QQ)
+13. [_忆山-没关系，是纯黑啊](https://pan.baidu.com/s/1KLgpq596noX7d_pqzaTLkw)
+14. [-⾕⾬_-我](https://pan.baidu.com/s/1gE5bwbCx6rauXdcAQu4sqA)
+15. [-⾕⾬_-『 Storyu 』](https://pan.baidu.com/s/1ihY7FdGr8NaP5Trw--i4JQ)
+16. [-⾕⾬_-她～](https://pan.baidu.com/s/1l59PwOYWmg2E9HchMaTNRg)
+17. [-⾕⾬_-吃](https://pan.baidu.com/s/1jr-aCvkqKu37uSy9PNtVDA)
+18. [-⾕⾬_-他～](链接:https://pan.baidu.com/s/1-ZbnjI_SbgST1gNo9OgU-A  密码:jjf0)
+19. [少女林酥梨-玩布](https://pan.baidu.com/s/1VVbrcEnIwRQtFSHkhPRGpA)
+20. [少女林酥梨-習繡](https://pan.baidu.com/s/1hslKvMDKAkbuO3d-UseFCg)
+21. [301-我和可乐](https://pan.baidu.com/s/1N_ZTbIAWL-J4DH7XkDQDfA)
+22. [⽆所谓密码-闲时瞎扯淡](https://pan.baidu.com/s/1ZinHxP2vAAiV35XxFvDkRg)
+23. [睡⾠-行](https://pan.baidu.com/s/1H-tQwPDjVYLqOAOyGBz_Yg)
+24. [睡⾠-言](https://pan.baidu.com/s/1BXRaoX_podBAmctOnQj8xQ)
+25. [睡⾠-语](https://pan.baidu.com/s/1PHowwlH7ddAd1hWu2UykgQ)
+26. [睡⾠-那就练字吧](https://pan.baidu.com/s/1CRqlgbSd2oL8qsxcz11zaw)
 
-待续
+感谢大家愿意分享的26个念本，希望大家在未来，都能坚持自己的梦想，成为自己想要的人。
+
+念，再见啦。
 
 

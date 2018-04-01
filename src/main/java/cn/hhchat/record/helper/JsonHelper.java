@@ -5,11 +5,16 @@ import cn.hhchat.record.model.Nian;
 import cn.hhchat.record.util.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.xiaoleilu.hutool.json.JSONUtil;
+import com.xiaoleilu.hutool.util.CharsetUtil;
+import com.xiaoleilu.hutool.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,9 +38,8 @@ public class JsonHelper {
     public static Nian load() {
         String jsonFile = FileUtil.generateJSONPath();
         try {
-            Path path = Paths.get(jsonFile);
-            List<String> jsonStrList = Files.readAllLines(path);
-            String jsonNian = jsonStrList.get(0);
+            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
+            String jsonNian = reader.readLine();
             Nian nian = JSON.parseObject(jsonNian, Nian.class);
             Config.UID = nian.getUser().getId();
             return nian;
